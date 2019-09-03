@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "clean": "rimraf client .cache",
-    "dev": "parcel ./src/*.html -d client",
-    "build": "parcel build ./src/*.html -d client"
+    "dev-server": "nodemon server.js --ignore src/ --ignore client/ --ignore cache/",
+    "dev-client": "parcel src/*.html -d client",
+    "dev": "concurrently -i -n c,s -c \"cyan.bold,magenta.bold\" npm:dev-client npm:dev-server",
+    "build": "parcel build src/*.html -d client"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,8 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "bulma": "^0.7.5",
+    "concurrently": "^4.1.2",
+    "nodemon": "^1.19.2",
     "parcel-bundler": "^1.12.3",
     "rimraf": "^3.0.0",
     "sass": "^1.22.10"
