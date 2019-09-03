@@ -1,0 +1,35 @@
+{
+  "name": "funlink",
+  "version": "0.0.1",
+  "description": "A network designed for fun with friends!",
+  "main": "app.js",
+  "scripts": {
+    "clean": "rimraf client .cache",
+    "dev": "parcel ./src/*.html -d client",
+    "build": "parcel build ./src/*.html -d client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plin0009/funlink-new.git"
+  },
+  "author": "Peter Lin <plin0009@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plin0009/funlink-new/issues"
+  },
+  "homepage": "https://github.com/plin0009/funlink-new#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "random-friendly-id": "^1.0.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "bulma": "^0.7.5",
+    "parcel-bundler": "^1.12.3",
+    "rimraf": "^3.0.0",
+    "sass": "^1.22.10"
+  }
+}
