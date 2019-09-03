@@ -21,7 +21,7 @@ ReactDOM.render(
                                 <div className="column">
                                     <div className="field">
                                         <div className="control">
-                                            <input class="input is-large" type="text" placeholder={`${rfid()}`}/>
+                                            <input className="input is-large" type="text" placeholder={`${rfid()}`}/>
                                         </div>
                                     </div>
                                 </div>
