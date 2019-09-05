@@ -5,9 +5,9 @@ class Layout extends React.Component {
     render() {
         return (
             <>
-                <section className="section">
+                <section className="section has-background-dark">
                     <div className="container">
-                        <h1 className="title is-1">Funlink</h1>
+                        <h1 className="title is-1">funlink</h1> {/* todo: replace with logo */}
                     </div>
                 </section>
                 {this.props.children}

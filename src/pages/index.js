@@ -3,6 +3,12 @@ import ReactDOM from 'react-dom';
 import Layout from '../components/Layout';
 import rfid from 'random-friendly-id';
 
+const createRoom = () => {
+    fetch('/room-create', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => window.location.href += data.funcode);
+}
+
 ReactDOM.render(
     <Layout>
         <section className="section">
@@ -11,13 +17,13 @@ ReactDOM.render(
                     <div className="column is-6">
                         <div className="box has-text-centered">
                             <h1 className="title">Need a room?</h1>
-                            <button className="button is-large is-primary has-text-dark">Create a funlink</button>
+                            <button className="button is-large is-primary has-text-dark" onClick={createRoom}>Create a funlink</button>
                         </div>
                     </div>
                     <div className="column">
                         <div className="box has-text-centered">
                             <h1 className="title">Have a funcode?</h1>
-                            <div className="columns">
+                            <div className="columns is-mobile">
                                 <div className="column">
                                     <div className="field">
                                         <div className="control">
@@ -25,7 +31,7 @@ ReactDOM.render(
                                         </div>
                                     </div>
                                 </div>
-                                <div className="column is-narrow has-text-centered">
+                                <div className="column is-narrow">
                                     <button className="button is-large is-primary has-text-dark">Join the fun!</button>                            
                                 </div>
                             </div>

@@ -15,7 +15,7 @@ $light-yellow: #ffeaaa;
 // theme
 $primary: $yellow;
 $info: $pink;
-$dark: $light-purple;
+$dark: $dark-purple;
 
 $background: $light-purple;
 $body-background-color: $background;
@@ -33,3 +33,18 @@ $input-color: $dark-purple;
 $button-text-color: $dark-purple;
 
 @import '../../node_modules/bulma/bulma.sass';
+
+input {
+    @include placeholder {
+        opacity: 1;
+    }
+}
+
+.chat-messages {
+    height: 20rem;
+    overflow-y: scroll;
+    .sender {
+        font-weight: bold;
+        padding-right: 1.5rem;
+    }
+}
