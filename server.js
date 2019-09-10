@@ -24,6 +24,21 @@ const newRoom = () => {
             delete rooms[funcode].inactivity;
         }
         socket.on('join', n => {     // when a nickname is chosen (person becomes player)
+            if (rooms[funcode].players[socket.id])                          return socket.emit('join error', `You're already in the room! Try reloading the page.`);
+            if (rooms[funcode].playersList.length >= settings.playersLimit) return socket.emit('join error', `Sorry, the room is full.`);
+            // make sure nickname is appropriate (no blank, non-alphanumeric, and lengthy nicknames)
+            if (n === '')                           return socket.emit('join error', `You can't join without a nickname!`);
+            if (!RegExp(`^[a-zA-Z\\d]+$`).test(n))   return socket.emit('join error', `Please use letters and numbers only!`);
+            if (n.length > 9)                       return socket.emit('join error', `Keep your nickname under 10 characters please!`);
+            // no duplicate nicknames
+            for (let i = 0; i < rooms[funcode].playersList.length; i++) {
+                if (rooms[funcode].players[rooms[funcode].playersList[i]].nickname === n) {
+                    return socket.emit('join error', `This nickname has already been taken!`);
+                }
+            }
+
+            // todo: add profanity filter
+
             console.log(`${n} joined ${funcode}`);
             rooms[funcode].players[socket.id] = {
                 id: socket.id,
@@ -41,7 +56,8 @@ const newRoom = () => {
         
         // socket.on('choose game', data => {});
         socket.on('send message', m => {
-            socket.broadcast.emit('sent message', { // sender already has a copy of the message
+            // todo: profanity filter
+            io.of(funcode).emit('sent message', { // send to everyone (including sender)
                 sender: rooms[funcode].players[socket.id].nickname,
                 message: m
             });

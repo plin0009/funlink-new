@@ -6,6 +6,7 @@ class Lobby extends React.Component {
         super(props);
         this.state = {
             nickname: '',
+            joinError: '',
             message: '',
             messages: [],
             room: false,
@@ -15,6 +16,9 @@ class Lobby extends React.Component {
     componentDidMount() {
         this.state.socket.on('connect', () => {
             console.log('socket connected');
+            this.state.socket.on('join error', e => {
+                this.setState({joinError: e});
+            });
             this.state.socket.on('joined', r => {
                 this.setState({room: r});
                 
@@ -67,62 +71,85 @@ class Lobby extends React.Component {
     sendMessage() {
         this.emit('send message', this.state.message);
         this.setState({message: ''});
-        this.addMessage({
-            sender: this.state.room.players[this.state.socket.id].nickname,
-            message: this.state.message
-        });
     }
     addMessage(message) {
-        console.log('hi111');
         this.setState({
             messages: [...this.state.messages, message]
         }, () => {
             const chatMessages = document.getElementById('chat-messages');
             chatMessages.scrollTop = chatMessages.scrollHeight; // when there's a new message, scroll to bottom
-            console.log('hi');
         });
-        console.log('hi2');
     }
     join(nickname) {
-        if (nickname === '') {} // todo: prevent blank nicknames
-        // todo: prevent duplicate nicknames (or add extensions)
+        // server will either emit 'join error' or 'joined'
         this.emit('join', nickname);
+    }
+    possiblySubmit(e, submit) {
+        console.log(`you pressed key ${e.keyCode}, possibly submitting`);
+        if (e.keyCode === 13)   submit();
     }
     render() {
         return (
             <section className="section">
                 <div className="container">
                     { !this.state.room ? (
-                        <div className="field is-grouped">
-                            <div className="control is-expanded">
-                                <input type="text" className="input is-large" value={this.state.nickname} onChange={e => this.handleChange(e, 'nickname')} placeholder="Nickname"/>
-                            </div>
-                            <div className="control">
-                                <button className="button is-large is-primary has-text-dark" onClick={() => this.join(this.state.nickname)}>Join!</button>
+                        <div>
+                            {this.state.joinError && (
+                                <div className="box has-background-danger">
+                                    {this.state.joinError}
+                                </div>
+                            )}
+                            <div className="field is-grouped">
+                                <div className="control is-expanded">
+                                    <input type="text" className="input is-large" value={this.state.nickname} onChange={e => this.handleChange(e, 'nickname')} onKeyDown={e => this.possiblySubmit(e, () => this.join(this.state.nickname))} placeholder="Nickname"/>
+                                </div>
+                                <div className="control">
+                                    <button className="button is-large is-primary has-text-dark" onClick={() => this.join(this.state.nickname)}>Join!</button>
+                                </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="box has-background-primary">
-                            <div className="chatbox">
-                                <div id="chat-messages" className="chat-messages">
-                                    {this.state.messages.map((item, index) => item.sender ? 
-                                        (<div key={index} className="chat-message">
-                                            <span className="sender">{item.sender}</span>{item.message}
-                                        </div>) : 
-                                        (<div key={index} className="chat-message has-text-centered">
-                                            {item}
-                                        </div>)
-                                    )}
-                                </div>
-                                <div className="field is-grouped">
-                                    <div className="control is-expanded">
-                                        <input type="text" className="input is-large" value={this.state.message} onChange={e => this.handleChange(e, 'message')} placeholder='Be nice!'/>
+                        <div id="lobby">
+                            <div className="columns">
+                                <div className="column is-narrow">
+                                    <div className="box has-background-primary">
+                                        <div id="players">
+                                            <h1 className="title has-text-dark">Players ({this.state.room.playersList.length})</h1>
+                                            <ul>
+                                                {this.state.room.playersList.map(id => (
+                                                    <li key={id}>{this.state.room.players[id].nickname}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div className="control">
-                                        <button className="button is-large is-info" onClick={() => this.sendMessage()}>Send</button>
+                                </div>
+                                <div className="column">
+                                    <div className="box has-background-primary">
+                                        <div className="chatbox">
+                                            <div id="chat-messages" className="chat-messages">
+                                                {this.state.messages.map((item, index) => item.sender ? 
+                                                    (<div key={index} className="chat-message">
+                                                        <span className="sender">{item.sender}</span>{item.message}
+                                                    </div>) : 
+                                                    (<div key={index} className="chat-message has-text-centered">
+                                                        {item}
+                                                    </div>)
+                                                )}
+                                            </div>
+                                            <div className="field is-grouped">
+                                                <div className="control is-expanded">
+                                                    <input type="text" className="input is-large" value={this.state.message} onChange={e => this.handleChange(e, 'message', () => this.sendMessage())} onKeyDown={e => this.possiblySubmit(e, () => this.sendMessage())} placeholder='Be nice!'/>
+                                                </div>
+                                                <div className="control">
+                                                    <button className="button is-large is-info" onClick={() => this.sendMessage()}>Send</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            
                         </div>
                     )}
                 </div>

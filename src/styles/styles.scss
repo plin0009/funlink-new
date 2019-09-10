@@ -42,9 +42,15 @@ input {
 
 .chat-messages {
     height: 20rem;
-    overflow-y: scroll;
+    overflow: hidden auto;
     .sender {
         font-weight: bold;
         padding-right: 1.5rem;
     }
+}
+
+.funlink-url {
+    text-align: center;
+    direction: rtl;
+    text-overflow: ellipsis;
 }
